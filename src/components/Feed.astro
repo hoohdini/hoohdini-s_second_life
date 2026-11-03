@@ -1,0 +1,34 @@
+---
+import { type Post, postUrl, metaLine } from '../lib/content';
+
+interface Props {
+  posts: Post[];
+  showType?: boolean;
+}
+const { posts, showType = true } = Astro.props;
+---
+{posts.length === 0 ? (
+  <p class="empty">아직 글이 없습니다.</p>
+) : (
+  <ul class="feed">
+    {posts.map((p) => (
+      <li>
+        <a class="entry" href={postUrl(p)}>
+          <span class="entry-meta">
+            {metaLine(p, showType)}
+            {p.data.draft && <span class="badge">초안</span>}
+          </span>
+          <span class="entry-title">{p.data.title}</span>
+          <span class="entry-summary">{p.data.summary}</span>
+          {(p.data.tags.length > 0 || p.data.files.length > 0) && (
+            <span class="entry-foot">
+              {p.data.tags.length > 0 && <span>{p.data.tags.map((t) => `#${t}`).join(' · ')}</span>}
+              {p.collection === 'papers' && <span>{p.data.venue}</span>}
+              {p.data.files.length > 0 && <span class="attach">파일 {p.data.files.length}개 첨부</span>}
+            </span>
+          )}
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

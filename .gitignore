@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# inbox 원본 자료는 저장소에 올리지 않는다 (회사 자료가 섞일 수 있음)
+inbox/*
+!inbox/README.md
+
+# Obsidian 설정
+.obsidian/

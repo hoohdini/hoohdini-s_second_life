@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import Feed from '../../components/Feed.astro';
+import { getAllPosts } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+<Base title={`#${tag}`} active="tags" activeTag={tag}>
+  <div class="page-head">
+    <h1>#{tag}</h1>
+    <span>{posts.length}개</span>
+  </div>
+  <Feed posts={posts} />
+</Base>

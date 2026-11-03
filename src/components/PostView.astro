@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { COLLECTION_LABEL } from '../site.config';
+import { type Post, postUrl, tagUrl, formatDate, getPosts } from '../lib/content';
+
+interface Props {
+  entry: Post;
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const label = COLLECTION_LABEL[entry.collection];
+
+// 같은 컬렉션 안에서 이전(더 오래된) / 다음(더 최근) 글
+const siblings = await getPosts(entry.collection);
+const i = siblings.findIndex((s) => s.id === entry.id);
+const newer = i > 0 ? siblings[i - 1] : undefined;
+const older = i >= 0 && i < siblings.length - 1 ? siblings[i + 1] : undefined;
+
+let linkedProject: Post | undefined;
+if (entry.collection === 'log' && entry.data.project) {
+  linkedProject = (await getPosts('projects')).find((p) => p.id === (entry.data as { project?: string }).project);
+}
+---
+<Base title={d.title} description={d.summary} active={entry.collection}>
+  <article>
+    <header class="post-head">
+      <a class="back" href={`/${entry.collection}/`}>← {label}</a>
+      <h1>{d.title}{d.draft && <span class="badge">초안</span>}</h1>
+      <dl class="meta-dl">
+        {entry.collection === 'papers' && (
+          <>
+            <dt>저자</dt><dd>{entry.data.authors}</dd>
+            <dt>발표</dt><dd>{entry.data.venue}</dd>
+            <dt>맥락</dt><dd>{entry.data.context} · {formatDate(d.date)}</dd>
+          </>
+        )}
+        {entry.collection === 'projects' && (
+          <>
+            <dt>구분</dt><dd>{entry.data.kind} · {entry.data.status}</dd>
+            {entry.data.period && <><dt>기간</dt><dd>{entry.data.period}</dd></>}
+            {entry.data.role && <><dt>역할</dt><dd>{entry.data.role}</dd></>}
+            {entry.data.stack.length > 0 && <><dt>스택</dt><dd>{entry.data.stack.join(', ')}</dd></>}
+          </>
+        )}
+        {entry.collection === 'log' && (
+          <>
+            <dt>날짜</dt><dd>{formatDate(d.date)}</dd>
+            {linkedProject && <><dt>프로젝트</dt><dd><a href={postUrl(linkedProject)}>{linkedProject.data.title}</a></dd></>}
+          </>
+        )}
+        {d.tags.length > 0 && (
+          <>
+            <dt>태그</dt>
+            <dd>{d.tags.map((t, n) => <>{n > 0 && ' · '}<a href={tagUrl(t)}>{t}</a></>)}</dd>
+          </>
+        )}
+        {d.updated && <><dt>수정</dt><dd>{formatDate(d.updated)}</dd></>}
+      </dl>
+      {(d.files.length > 0 || d.links.length > 0 || (entry.collection === 'papers' && entry.data.paperUrl)) && (
+        <div class="attachments">
+          {d.files.map((f) => (
+            <a class="attachment" href={f.path} download>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+              <span>{f.name}</span>
+              {f.size && <small>{f.size}</small>}
+            </a>
+          ))}
+          {entry.collection === 'papers' && entry.data.paperUrl && (
+            <a class="attachment" href={entry.data.paperUrl}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              <span>원문</span>
+            </a>
+          )}
+          {d.links.map((l) => (
+            <a class="attachment" href={l.url}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              <span>{l.label}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <section class="summary-box">
+      <h2>한 줄 요약</h2>
+      <p>{d.summary}</p>
+    </section>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {(older || newer) && (
+      <nav class="pager" aria-label="이전 다음 글">
+        {older ? <a href={postUrl(older)}><small>← 이전</small><span>{older.data.title}</span></a> : <span />}
+        {newer && <a class="next" href={postUrl(newer)}><small>다음 →</small><span>{newer.data.title}</span></a>}
+      </nav>
+    )}
+  </article>
+</Base>

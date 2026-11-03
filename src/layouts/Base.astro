@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import { SITE, NAV, type NavKey } from '../site.config';
+import { getTopTags, tagUrl } from '../lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  active: NavKey;
+  activeTag?: string;
+}
+const { title, description = SITE.description, active, activeTag } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
+const tags = await getTopTags();
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@500;600&display=swap"
+  />
+</head>
+<body>
+  <div class="frame">
+    <aside class="sidebar">
+      <div class="brand">
+        <a href="/">{SITE.name}</a>
+        <p>{SITE.bio}</p>
+      </div>
+      <nav class="nav" aria-label="주 메뉴">
+        {NAV.map((n) => (
+          <a href={n.href} aria-current={n.key === active ? 'page' : undefined}>{n.label}</a>
+        ))}
+      </nav>
+      {tags.length > 0 && (
+        <div class="side-block">
+          <span>태그</span>
+          <div class="chips">
+            {tags.map((t) => (
+              <a class="chip" href={tagUrl(t)} aria-current={t === activeTag ? 'page' : undefined}>{t}</a>
+            ))}
+          </div>
+        </div>
+      )}
+      <div class="side-links">
+        {SITE.links.map((l) => <a href={l.href}>{l.label} ↗</a>)}
+      </div>
+    </aside>
+    <main class="main">
+      <slot />
+      <footer class="site-footer">© {new Date().getFullYear()} {SITE.name} · <a href="/rss.xml">RSS</a></footer>
+    </main>
+  </div>
+</body>
+</html>

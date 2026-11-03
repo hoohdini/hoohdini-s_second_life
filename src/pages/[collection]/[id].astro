@@ -1,0 +1,18 @@
+---
+import PostView from '../../components/PostView.astro';
+import { COLLECTION_LABEL } from '../../site.config';
+import { getPosts, type PostCollection } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const collection of Object.keys(COLLECTION_LABEL) as PostCollection[]) {
+    for (const entry of await getPosts(collection)) {
+      paths.push({ params: { collection, id: entry.id }, props: { entry } });
+    }
+  }
+  return paths;
+}
+
+const { entry } = Astro.props;
+---
+<PostView entry={entry} />

@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import Feed from '../../components/Feed.astro';
+import { COLLECTION_LABEL } from '../../site.config';
+import { getPosts, type PostCollection } from '../../lib/content';
+
+export function getStaticPaths() {
+  return (Object.keys(COLLECTION_LABEL) as PostCollection[]).map((collection) => ({ params: { collection } }));
+}
+
+const INTRO: Record<PostCollection, string> = {
+  projects: '직접 만들거나 연구한 것들. 문제, 접근, 결과, 회고 순서로 정리합니다.',
+  papers: '개인적으로, 또는 학회·스터디에서 읽은 논문의 리뷰.',
+  log: '인턴 기간 동안의 진행 기록. 회사 내부 정보는 빼고 배운 것 위주로 씁니다.',
+};
+
+const collection = Astro.params.collection as PostCollection;
+const posts = await getPosts(collection);
+---
+<Base title={COLLECTION_LABEL[collection]} active={collection}>
+  <div class="page-head">
+    <h1>{COLLECTION_LABEL[collection]}</h1>
+    <span>{posts.length}개</span>
+  </div>
+  <p class="page-intro">{INTRO[collection]}</p>
+  <Feed posts={posts} showType={false} />
+</Base>

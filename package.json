@@ -1,0 +1,16 @@
+{
+  "name": "sungha-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro build && node scripts/check-private.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.0",
+    "astro": "^7.4.5"
+  }
+}

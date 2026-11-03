@@ -1,0 +1,66 @@
+# CV 페이지 내용. 섹션은 order 순서로, 항목은 적은 순서대로 보입니다.
+# [ ] 로 표시된 곳은 직접 채워주세요.
+# href 를 적으면 항목 제목이 해당 글로 연결됩니다.
+
+- id: education
+  order: 1
+  title: 학력
+  items:
+    - period: "[입학] — 재학"
+      title: 연세대학교 · 통계학 학사 과정
+      subtitle: "[관련 수강 과목 / 학점 — 선택]"
+
+- id: research
+  order: 2
+  title: 연구 경험
+  items:
+    - period: "[시작] — 현재"
+      title: Data Science Lab (DSL), 연세대학교 · 학부연구생
+      subtitle: 지도교수 박태영
+      bullets:
+        - 생성형 추천 — TIGER 프레임워크에 semantic ID 증강을 적용하는 확장 연구
+        - AIDEPrism — AEO 브랜드 모니터링 플랫폼의 스코어링 지수와 질문 생성 파이프라인
+        - LLM GEO 분석 (기업 협업) — LLM 출력의 인용 클러스터링과 잠재공간 분석
+
+- id: intern
+  order: 3
+  title: 인턴
+  items:
+    - period: "[시작] — 현재"
+      title: "[인턴 회사] · [직무]"
+      bullets:
+        - 설문지 응답 추출기 — 스캔 설문지 응답을 OCR로 구조화 데이터로 바꾸는 파이프라인
+        - "[성과 한 줄 — 처리량, 정확도 등 측정한 수치가 있으면]"
+
+- id: projects
+  order: 4
+  title: 프로젝트
+  items:
+    - period: "2026"
+      title: 을지로 점심줄
+      href: /projects/euljiro-lunch/
+      subtitle: 을지로3가·종각 점심 식당 혼잡도를 보여주는 웹앱 · 개인
+    - period: "2026"
+      title: MADI AI ROOKIE 공모전 · 팀 데일밴드 (5인)
+      subtitle: 국내 AI 모델 5종 기반 멀티 페르소나 AI 워크스페이스 · Next.js, Supabase, Vercel · [결과]
+
+- id: activities
+  order: 5
+  title: 활동
+  items:
+    - period: "[기간]"
+      title: 논문 리딩 스터디 · 개설 및 운영
+      subtitle: 3~4명, 매주 논문 한 편 — 출제자가 문제를 내고 풀이·해설하는 형식
+    - period: "[기간]"
+      title: DSL 학회 홈페이지 운영
+      subtitle: Cloudflare Pages + GitHub로 기수·동문·프로젝트 아카이브 관리
+    - period: "[기간]"
+      title: 연세 데이터사이언스 동아리
+      subtitle: EDA 프로젝트 — EdNet(산타토익) 혼동 지수, 사람과 비전 모델의 시각 표상 비교
+
+- id: skills
+  order: 6
+  title: 기술
+  items:
+    - period: 언어·도구
+      title: "[Python, PyTorch, SQL 등 — 실제로 쓴 것만]"

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.config';
+import fs from 'node:fs';
+
+const sections = (await getCollection('cv')).sort((a, b) => a.data.order - b.data.order);
+const updated = SITE.cvUpdated;
+const hasPdf = fs.existsSync(`./public${SITE.cvPdf}`);
+---
+<Base title="CV" active="cv">
+  <div class="cv-head">
+    <div>
+      <h1>CV</h1>
+      <span>마지막 수정 {updated}</span>
+    </div>
+    {hasPdf && (
+      <a class="button" href={SITE.cvPdf} download>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+        PDF 다운로드
+      </a>
+    )}
+  </div>
+
+  {sections.map((s) => (
+    <section class="cv-section">
+      <h2>{s.data.title}</h2>
+      {s.data.items.map((item) => (
+        <div class="cv-row">
+          <span class="cv-period">{item.period}</span>
+          <div class="cv-body">
+            {item.href ? <a class="cv-title" href={item.href}>{item.title}</a> : <span class="cv-title">{item.title}</span>}
+            {item.subtitle && <span class="cv-sub">{item.subtitle}</span>}
+            {item.bullets.length > 0 && <ul>{item.bullets.map((b) => <li>{b}</li>)}</ul>}
+          </div>
+        </div>
+      ))}
+    </section>
+  ))}
+</Base>

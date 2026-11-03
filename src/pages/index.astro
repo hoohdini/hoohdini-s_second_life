@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Feed from '../components/Feed.astro';
+import { getAllPosts, formatDate } from '../lib/content';
+
+const posts = await getAllPosts();
+const last = posts[0];
+---
+<Base active="all">
+  <div class="page-head">
+    <h1>전체 기록</h1>
+    {last && <span>최신순 · 마지막 업데이트 {formatDate(last.data.updated ?? last.data.date)}</span>}
+  </div>
+  <Feed posts={posts} />
+</Base>
