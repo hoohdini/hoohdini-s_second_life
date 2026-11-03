@@ -43,12 +43,14 @@ Node 22.23 이상이 필요합니다.
 
 `src/content` 폴더를 Obsidian 볼트로 열면 그대로 편집할 수 있습니다. 단, `[[위키링크]]`는 사이트에서 링크가 되지 않으니 `[제목](/papers/id/)` 형식을 쓰세요.
 
-## 배포
+## 배포 (Cloudflare Workers)
 
-GitHub에 올린 뒤 아래 중 하나에 저장소를 연결합니다. 빌드 명령 `npm run build`, 출력 폴더 `dist`.
+`wrangler.jsonc`에 정적 사이트 설정이 들어 있습니다. Cloudflare 대시보드 → Workers & Pages → Create application → Import a repository에서 이 저장소를 고르고:
 
-- **Vercel** 또는 **Cloudflare Pages**: 저장소만 연결하면 push할 때마다 자동 배포
-- 배포 주소가 정해지면 `astro.config.mjs`의 `site`를 바꿉니다.
+- Build command: `npm run check` (빌드 + 비공개 글 누출 검사)
+- Deploy command: `npx wrangler deploy`
+
+이후 `main`에 push할 때마다 자동 배포됩니다. 배포 주소가 정해지면 `astro.config.mjs`의 `site`를 바꿉니다.
 
 ## 고칠 곳
 
